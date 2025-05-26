@@ -1,20 +1,20 @@
+# Use Node.js base image
 FROM node:18
 
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy root-level package.json files
-COPY package*.json ./
+# Copy only the backend's package files first (for caching npm install)
+COPY backend/package*.json ./
 
-# Install root dependencies (e.g. express, mongoose, nodemon)
+# Install backend dependencies
 RUN npm install
 
-# Copy the entire app (backend and frontend)
-COPY . .
+# Copy the rest of the backend app source code
+COPY backend/ ./
 
-# Set working directory to backend if that’s where the server is
-WORKDIR /usr/src/app/backend
-
-# Expose backend port
+# Expose port (if your backend runs on a port like 3000)
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+# Start the backend app
+CMD ["npm", "start"]
